@@ -1,10 +1,3 @@
-//
-//  _eokApp.swift
-//  1eok
-//
-//  Created by T_Y on 6/10/25.
-//
-
 import SwiftUI
 
 @main
@@ -14,20 +7,16 @@ struct _eokApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WindowView()
                 .environment(appModel)
         }
-
-        ImmersiveSpace(id: appModel.immersiveSpaceID) {
-            ImmersiveView()
+        
+        WindowGroup(id: "HologramMatrix") {
+            HologramMatrixView()
                 .environment(appModel)
-                .onAppear {
-                    appModel.immersiveSpaceState = .open
-                }
-                .onDisappear {
-                    appModel.immersiveSpaceState = .closed
-                }
         }
-        .immersionStyle(selection: .constant(.full), in: .full)
+        .windowStyle(.volumetric)
+        .defaultSize(width: 0.5, height: 0.5, depth: 0.5, in: .meters)
+        
     }
 }
