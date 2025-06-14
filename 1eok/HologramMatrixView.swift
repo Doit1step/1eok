@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
-import RealityFoundation
+import simd
+import RealityKit
 import _RealityKit_SwiftUI
 
 struct HologramMatrixView: View {
+    @State private var desiredOrientation: simd_quatf?
+    @State private var didUpdateSubscription: EventSubscription?
     
     var body: some View {
         
@@ -108,6 +111,17 @@ struct HologramMatrixView: View {
         let material_taskFrameCube = SimpleMaterial(color: color_taskFrameCube, isMetallic: false)
         //*** End ***//
         
+        let color_taskFrameCube_detected = UIColor(
+            red: 60.0/255.0,
+            green:  20.0/255.0,
+            blue: 123.0/255.0,
+            alpha:   1.0
+        )
+        
+        let material_taskFrameCube_detected = SimpleMaterial(color: color_taskFrameCube_detected, isMetallic: false)
+        
+        
+        
         RealityView { content in
             
             //*** Generate Root Entity ***//
@@ -144,569 +158,128 @@ struct HologramMatrixView: View {
             root.addChild(onHoldBaseFloorPlane)
             //*** End ***//
             
-            //*** Generate Date Plane ***//
-            let datePlane_1 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_1])
-            
-            datePlane_1.position = SIMD3<Float>(-0.225, -0.25, 0.25)
-            
-            root.addChild(datePlane_1)
-            
-            let datePlane_2 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_2])
-            
-            datePlane_2.position = SIMD3<Float>(-0.175, -0.25, 0.25)
-            
-            root.addChild(datePlane_2)
-            
-            let datePlane_3 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_1])
-            
-            datePlane_3.position = SIMD3<Float>(-0.125, -0.25, 0.25)
-            
-            root.addChild(datePlane_3)
-            
-            let datePlane_4 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_2])
-            
-            datePlane_4.position = SIMD3<Float>(-0.075, -0.25, 0.25)
-            
-            root.addChild(datePlane_4)
-            
-            let datePlane_5 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_1])
-            
-            datePlane_5.position = SIMD3<Float>(-0.025, -0.25, 0.25)
-        
-            root.addChild(datePlane_5)
-            
-            let datePlane_6 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_2])
-            
-            datePlane_6.position = SIMD3<Float>(0.025, -0.25, 0.25)
-            
-            root.addChild(datePlane_6)
-            
-            let datePlane_7 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_1])
-            
-            datePlane_7.position = SIMD3<Float>(0.075, -0.25, 0.25)
-            
-            root.addChild(datePlane_7)
-            
-            let datePlane_8 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_2])
-            
-            datePlane_8.position = SIMD3<Float>(0.125, -0.25, 0.25)
-            
-            root.addChild(datePlane_8)
-            
-            let datePlane_9 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_1])
-            
-            datePlane_9.position = SIMD3<Float>(0.175, -0.25, 0.25)
-            
-            root.addChild(datePlane_9)
-            
-            let datePlane_10 = ModelEntity(mesh: mesh_datePlane, materials: [material_datePlane_2])
-            
-            datePlane_10.position = SIMD3<Float>(0.225, -0.25, 0.25)
-            
-            root.addChild(datePlane_10)
+            //*** Generate Date Planes ***//
+            let meshDatePlane = mesh_datePlane
+            let materialsDatePlane = [material_datePlane_1, material_datePlane_2]
+            for i in 0..<10 {
+                let material = materialsDatePlane[i % 2]
+                let datePlane = ModelEntity(mesh: meshDatePlane, materials: [material])
+                let xPos = -0.225 + Float(i) * 0.05
+                datePlane.position = SIMD3<Float>(xPos, -0.25, 0.25)
+                root.addChild(datePlane)
+            }
             //*** End ***//
             
-            //*** Generate Task Frame Cube ***//
-            let taskFrameCube_1_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_1.position = SIMD3<Float>(-0.225,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_1_1)
-            
-            let taskFrameCube_1_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_2.position = SIMD3<Float>(-0.225,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_1_2)
-            
-            let taskFrameCube_1_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_3.position = SIMD3<Float>(-0.225,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_1_3)
-            
-            let taskFrameCube_1_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_4.position = SIMD3<Float>(-0.225,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_1_4)
-            
-            let taskFrameCube_1_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_5.position = SIMD3<Float>(-0.225,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_1_5)
-            
-            let taskFrameCube_1_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_6.position = SIMD3<Float>(-0.225,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_1_6)
-            
-            let taskFrameCube_1_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_7.position = SIMD3<Float>(-0.225,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_1_7)
-            
-            let taskFrameCube_1_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_1_8.position = SIMD3<Float>(-0.225,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_1_8)
-            
-            //
-            
-            let taskFrameCube_2_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_1.position = SIMD3<Float>(-0.175,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_2_1)
-            
-            let taskFrameCube_2_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_2.position = SIMD3<Float>(-0.175,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_2_2)
-            
-            let taskFrameCube_2_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_3.position = SIMD3<Float>(-0.175,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_2_3)
-            
-            let taskFrameCube_2_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_4.position = SIMD3<Float>(-0.175,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_2_4)
-            
-            let taskFrameCube_2_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_5.position = SIMD3<Float>(-0.175,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_2_5)
-            
-            let taskFrameCube_2_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_6.position = SIMD3<Float>(-0.175,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_2_6)
-            
-            let taskFrameCube_2_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_7.position = SIMD3<Float>(-0.175,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_2_7)
-            
-            let taskFrameCube_2_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_2_8.position = SIMD3<Float>(-0.175,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_2_8)
-            
-            //
-            
-            let taskFrameCube_3_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_1.position = SIMD3<Float>(-0.125,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_3_1)
-            
-            let taskFrameCube_3_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_2.position = SIMD3<Float>(-0.125,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_3_2)
-            
-            let taskFrameCube_3_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_3.position = SIMD3<Float>(-0.125,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_3_3)
-            
-            let taskFrameCube_3_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_4.position = SIMD3<Float>(-0.125,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_3_4)
-            
-            let taskFrameCube_3_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_5.position = SIMD3<Float>(-0.125,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_3_5)
-            
-            let taskFrameCube_3_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_6.position = SIMD3<Float>(-0.125,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_3_6)
-            
-            let taskFrameCube_3_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_7.position = SIMD3<Float>(-0.125,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_3_7)
-            
-            let taskFrameCube_3_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_3_8.position = SIMD3<Float>(-0.125,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_3_8)
-            
-            //
-            
-            let taskFrameCube_4_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_1.position = SIMD3<Float>(-0.075,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_4_1)
-            
-            let taskFrameCube_4_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_2.position = SIMD3<Float>(-0.075,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_4_2)
-            
-            let taskFrameCube_4_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_3.position = SIMD3<Float>(-0.075,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_4_3)
-            
-            let taskFrameCube_4_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_4.position = SIMD3<Float>(-0.075,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_4_4)
-            
-            let taskFrameCube_4_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_5.position = SIMD3<Float>(-0.075,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_4_5)
-            
-            let taskFrameCube_4_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_6.position = SIMD3<Float>(-0.075,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_4_6)
-            
-            let taskFrameCube_4_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_7.position = SIMD3<Float>(-0.075,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_4_7)
-            
-            let taskFrameCube_4_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_4_8.position = SIMD3<Float>(-0.075,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_4_8)
-            
-            //
-            
-            let taskFrameCube_5_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_1.position = SIMD3<Float>(-0.025,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_5_1)
-            
-            let taskFrameCube_5_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_2.position = SIMD3<Float>(-0.025,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_5_2)
-            
-            let taskFrameCube_5_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_3.position = SIMD3<Float>(-0.025,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_5_3)
-            
-            let taskFrameCube_5_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_4.position = SIMD3<Float>(-0.025,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_5_4)
-            
-            let taskFrameCube_5_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_5.position = SIMD3<Float>(-0.025,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_5_5)
-            
-            let taskFrameCube_5_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_6.position = SIMD3<Float>(-0.025,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_5_6)
-            
-            let taskFrameCube_5_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_7.position = SIMD3<Float>(-0.025,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_5_7)
-            
-            let taskFrameCube_5_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_5_8.position = SIMD3<Float>(-0.025,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_5_8)
-            
-            //
-            
-            let taskFrameCube_6_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_1.position = SIMD3<Float>(0.025,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_6_1)
-            
-            let taskFrameCube_6_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_2.position = SIMD3<Float>(0.025,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_6_2)
-            
-            let taskFrameCube_6_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_3.position = SIMD3<Float>(0.025,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_6_3)
-            
-            let taskFrameCube_6_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_4.position = SIMD3<Float>(0.025,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_6_4)
-            
-            let taskFrameCube_6_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_5.position = SIMD3<Float>(0.025,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_6_5)
-            
-            let taskFrameCube_6_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_6.position = SIMD3<Float>(0.025,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_6_6)
-            
-            let taskFrameCube_6_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_7.position = SIMD3<Float>(0.025,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_6_7)
-            
-            let taskFrameCube_6_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_6_8.position = SIMD3<Float>(0.025,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_6_8)
-            
-            //
-            
-            let taskFrameCube_7_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_1.position = SIMD3<Float>(0.075,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_7_1)
-            
-            let taskFrameCube_7_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_2.position = SIMD3<Float>(0.075,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_7_2)
-            
-            let taskFrameCube_7_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_3.position = SIMD3<Float>(0.075,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_7_3)
-            
-            let taskFrameCube_7_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_4.position = SIMD3<Float>(0.075,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_7_4)
-            
-            let taskFrameCube_7_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_5.position = SIMD3<Float>(0.075,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_7_5)
-            
-            let taskFrameCube_7_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_6.position = SIMD3<Float>(0.075,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_7_6)
-            
-            let taskFrameCube_7_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_7.position = SIMD3<Float>(0.075,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_7_7)
-            
-            let taskFrameCube_7_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_7_8.position = SIMD3<Float>(0.075,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_7_8)
-            
-            //
-            
-            let taskFrameCube_8_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_1.position = SIMD3<Float>(0.125,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_8_1)
-            
-            let taskFrameCube_8_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_2.position = SIMD3<Float>(0.125,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_8_2)
-            
-            let taskFrameCube_8_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_3.position = SIMD3<Float>(0.125,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_8_3)
-            
-            let taskFrameCube_8_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_4.position = SIMD3<Float>(0.125,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_8_4)
-            
-            let taskFrameCube_8_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_5.position = SIMD3<Float>(0.125,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_8_5)
-            
-            let taskFrameCube_8_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_6.position = SIMD3<Float>(0.125,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_8_6)
-            
-            let taskFrameCube_8_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_7.position = SIMD3<Float>(0.125,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_8_7)
-            
-            let taskFrameCube_8_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_8_8.position = SIMD3<Float>(0.125,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_8_8)
-            
-            //
-            
-            let taskFrameCube_9_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_1.position = SIMD3<Float>(0.175,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_9_1)
-            
-            let taskFrameCube_9_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_2.position = SIMD3<Float>(0.175,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_9_2)
-            
-            let taskFrameCube_9_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_3.position = SIMD3<Float>(0.175,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_9_3)
-            
-            let taskFrameCube_9_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_4.position = SIMD3<Float>(0.175,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_9_4)
-            
-            let taskFrameCube_9_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_5.position = SIMD3<Float>(0.175,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_9_5)
-            
-            let taskFrameCube_9_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_6.position = SIMD3<Float>(0.175,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_9_6)
-            
-            let taskFrameCube_9_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_7.position = SIMD3<Float>(0.175,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_9_7)
-            
-            let taskFrameCube_9_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_9_8.position = SIMD3<Float>(0.175,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_9_8)
-            
-            //
-            
-            let taskFrameCube_10_1 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_1.position = SIMD3<Float>(0.225,-0.225,0.225)
-            
-            root.addChild(taskFrameCube_10_1)
-            
-            let taskFrameCube_10_2 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_2.position = SIMD3<Float>(0.225,-0.225,0.175)
-            
-            root.addChild(taskFrameCube_10_2)
-            
-            let taskFrameCube_10_3 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_3.position = SIMD3<Float>(0.225,-0.225,0.125)
-            
-            root.addChild(taskFrameCube_10_3)
-            
-            let taskFrameCube_10_4 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_4.position = SIMD3<Float>(0.225,-0.225,0.075)
-            
-            root.addChild(taskFrameCube_10_4)
-            
-            let taskFrameCube_10_5 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_5.position = SIMD3<Float>(0.225,-0.225,0.025)
-            
-            root.addChild(taskFrameCube_10_5)
-            
-            let taskFrameCube_10_6 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_6.position = SIMD3<Float>(0.225,-0.225,-0.025)
-            
-            root.addChild(taskFrameCube_10_6)
-            
-            let taskFrameCube_10_7 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_7.position = SIMD3<Float>(0.225,-0.225,-0.075)
-            
-            root.addChild(taskFrameCube_10_7)
-            
-            let taskFrameCube_10_8 = ModelEntity(mesh: mesh_taskFrameCube, materials: [material_taskFrameCube])
-            
-            taskFrameCube_10_8.position = SIMD3<Float>(0.225,-0.225,-0.125)
-            
-            root.addChild(taskFrameCube_10_8)
+            //*** Generate Main Task Frame Cubes ***//
+            let main_task_cubeMesh = mesh_taskFrameCube
+            let main_task_cubeMaterial = material_taskFrameCube
+            for col in 0..<10 {
+                let xPos = -0.225 + Float(col) * 0.05
+                for row in 0..<8 {
+                    let zPos = 0.225 - Float(row) * 0.05
+                    for pile in 0..<4 {
+                        let yPos = -0.225 + Float(pile) * 0.05
+                        
+                        let cube = ModelEntity(mesh: main_task_cubeMesh, materials: [main_task_cubeMaterial])
+                        
+                        cube.position = SIMD3<Float>(xPos, yPos, zPos)
+                        
+                        cube.name = "main_\(col)_\(row)_\(pile)"
+                        
+                        root.addChild(cube)
+                    }
+                }
+            }
             //*** End ***//
             
+            //*** Generate Routine Task Frame Cubes ***//
+            let routine_task_cubeMesh = mesh_taskFrameCube
+            let routine_task_cubeMaterial = material_taskFrameCube
+            for col in 0..<10 {
+                let xPos = -0.225 + Float(col) * 0.05
+                for row in 0..<1 {
+                    let zPos = -0.175 - Float(row) * 0.05
+                    for pile in 0..<3 {
+                        let yPos = -0.025 + Float(pile) * 0.05
+                        
+                        let cube = ModelEntity(mesh: routine_task_cubeMesh, materials: [routine_task_cubeMaterial])
+                        
+                        cube.position = SIMD3<Float>(xPos, yPos, zPos)
+                        
+                        cube.name = "routine_\(col)_\(row)_\(pile)"
+                        
+                        root.addChild(cube)
+                    }
+                }
+            }
+            //*** End ***//
             
+            //*** Generate on Hold Task Frame Cubes ***//
+            let onHold_task_cubeMesh = mesh_taskFrameCube
+            let onHold_task_cubeMaterial = material_taskFrameCube
+            for col in 0..<10 {
+                let xPos = -0.225 + Float(col) * 0.05
+                for row in 0..<1 {
+                    let zPos = -0.225 - Float(row) * 0.05
+                    for pile in 0..<3 {
+                        let yPos = 0.125 + Float(pile) * 0.05
+                        
+                        let cube = ModelEntity(mesh: onHold_task_cubeMesh, materials: [onHold_task_cubeMaterial])
+                        
+                        cube.position = SIMD3<Float>(xPos, yPos, zPos)
+                        
+                        cube.name = "onHold_\(col)_\(row)_\(pile)"
+                        
+                        root.addChild(cube)
+                    }
+                }
+            }
+            //*** End ***//
+            
+            //*** Generate Test Task Sphere ***//
+            let sphere = buildSphere(radius: 0.01)
+            sphere.position = [0, 0, 0]
+            
+            if #available(visionOS 26.0, *) {
+                ManipulationComponent.configureEntity(sphere)
+                var manipulationComponent = ManipulationComponent()
+                manipulationComponent.releaseBehavior = .stay
+                sphere.components.set(manipulationComponent)
+            } else {
+                // Fallback on earlier versions
+            }
+            
+            root.addChild(sphere)
+            //*** End ***//
+
+            if #available(visionOS 26.0, *) {
+                didUpdateSubscription = content.subscribe(to: ManipulationEvents.DidUpdateTransform.self) { event in
+                    guard event.entity == sphere else { return }
+                    
+                    // sphere의 월드 좌표 계산
+                    let worldMatrix = sphere.transformMatrix(relativeTo: nil)
+                    let spherePos   = SIMD3<Float>(worldMatrix.columns.3.x,
+                                                   worldMatrix.columns.3.y,
+                                                   worldMatrix.columns.3.z)
+                    
+                    // 모든 자식 엔티티 중 이름이 "main_"으로 시작하는 큐브들 충돌 검사
+                    for child in root.children {
+                        guard let cube = child as? ModelEntity,
+                              (cube.name.hasPrefix("main_") || cube.name.hasPrefix("routine_") || cube.name.hasPrefix("onHold_"))
+                        else { continue }
+                        let bounds = cube.visualBounds(relativeTo: nil)
+                        if bounds.contains(spherePos) {
+                            print("Collided with cube:", cube.name)
+                            
+                            cube.model?.materials = [material_taskFrameCube_detected]
+                        }
+                    }
+                    
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+
             content.add(root)
             
         }
@@ -716,6 +289,12 @@ struct HologramMatrixView: View {
 private func buildBox(size: SIMD3<Float>, color: UIColor) -> ModelEntity {
     let mesh = MeshResource.generateBox(size: size)
     let mat  = SimpleMaterial(color: color, isMetallic: false)
+    return ModelEntity(mesh: mesh, materials: [mat])
+}
+
+private func buildSphere(radius: Float) -> ModelEntity {
+    let mesh = MeshResource.generateSphere(radius: radius)
+    let mat  = SimpleMaterial(color: .red, isMetallic: false)
     return ModelEntity(mesh: mesh, materials: [mat])
 }
 
