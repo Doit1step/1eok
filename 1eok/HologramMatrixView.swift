@@ -307,6 +307,8 @@ struct HologramMatrixView: View {
                         duration: 0.3,
                         timingFunction: .easeInOut
                     )
+                    
+                    targetCube.isEnabled = false
                 }
             } else {
                 // Fallback on earlier versions
