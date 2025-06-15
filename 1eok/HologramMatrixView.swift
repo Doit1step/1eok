@@ -13,6 +13,7 @@ import _RealityKit_SwiftUI
 struct HologramMatrixView: View {
     @State private var desiredOrientation: simd_quatf?
     @State private var didUpdateSubscription: EventSubscription?
+    @State private var previousCollidedCubeName: String? = nil
     
     var body: some View {
         
@@ -100,25 +101,16 @@ struct HologramMatrixView: View {
         let size_taskFrameCube = SIMD3<Float>(0.05, 0.05, 0.05)
         
         let mesh_taskFrameCube = MeshResource.generateBox(size: size_taskFrameCube)
-        
+    
         let color_taskFrameCube = UIColor(
-            red: 0.0/255.0,
-            green:  20.0/255.0,
-            blue: 123.0/255.0,
-            alpha:   0.3
+            red: 255.0/255.0,
+            green:  255.0/255.0,
+            blue: 255.0/255.0,
+            alpha:   0.1
         )
         
         let material_taskFrameCube = SimpleMaterial(color: color_taskFrameCube, isMetallic: false)
         //*** End ***//
-        
-        let color_taskFrameCube_detected = UIColor(
-            red: 60.0/255.0,
-            green:  20.0/255.0,
-            blue: 123.0/255.0,
-            alpha:   1.0
-        )
-        
-        let material_taskFrameCube_detected = SimpleMaterial(color: color_taskFrameCube_detected, isMetallic: false)
         
         
         
@@ -186,6 +178,8 @@ struct HologramMatrixView: View {
                         
                         cube.name = "main_\(col)_\(row)_\(pile)"
                         
+                        cube.isEnabled = false;
+                        
                         root.addChild(cube)
                     }
                 }
@@ -207,6 +201,7 @@ struct HologramMatrixView: View {
                         cube.position = SIMD3<Float>(xPos, yPos, zPos)
                         
                         cube.name = "routine_\(col)_\(row)_\(pile)"
+                        cube.isEnabled = false;
                         
                         root.addChild(cube)
                     }
@@ -229,6 +224,7 @@ struct HologramMatrixView: View {
                         cube.position = SIMD3<Float>(xPos, yPos, zPos)
                         
                         cube.name = "onHold_\(col)_\(row)_\(pile)"
+                        cube.isEnabled = false;
                         
                         root.addChild(cube)
                     }
@@ -261,20 +257,56 @@ struct HologramMatrixView: View {
                     let spherePos   = SIMD3<Float>(worldMatrix.columns.3.x,
                                                    worldMatrix.columns.3.y,
                                                    worldMatrix.columns.3.z)
-                    
-                    // 모든 자식 엔티티 중 이름이 "main_"으로 시작하는 큐브들 충돌 검사
+
+                    // Determine current collided cube
+                    var currentCube: ModelEntity? = nil
                     for child in root.children {
                         guard let cube = child as? ModelEntity,
                               (cube.name.hasPrefix("main_") || cube.name.hasPrefix("routine_") || cube.name.hasPrefix("onHold_"))
                         else { continue }
                         let bounds = cube.visualBounds(relativeTo: nil)
                         if bounds.contains(spherePos) {
-                            print("Collided with cube:", cube.name)
-                            
-                            cube.model?.materials = [material_taskFrameCube_detected]
+                            currentCube = cube
+                            break
                         }
                     }
+                    // Update states if collision occurred and cube is different
+                    if let cube = currentCube, cube.name != previousCollidedCubeName {
+                        // Disable previous cube
+                        if let prevName = previousCollidedCubeName,
+                           let prevCube = root.findEntity(named: prevName) as? ModelEntity {
+                            prevCube.isEnabled = false
+                            prevCube.model?.materials = [material_taskFrameCube]
+                        }
+                        // Enable current cube
+                        cube.isEnabled = true
+                        cube.model?.materials = [material_taskFrameCube]
+                        previousCollidedCubeName = cube.name
+                    }
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+
+            if #available(visionOS 26.0, *) {
+                content.subscribe(to: ManipulationEvents.WillEnd.self) { event in
+                    guard event.entity == sphere,
+                          let prevName = previousCollidedCubeName,
+                          let targetCube = root.findEntity(named: prevName) as? ModelEntity
+                    else { return }
                     
+                    // Move sphere to the last collided cube's position over 0.3s
+                    let targetPosition = targetCube.transform.translation
+                    sphere.move(
+                        to: Transform(
+                            scale: sphere.transform.scale,
+                            rotation: sphere.transform.rotation,
+                            translation: targetPosition
+                        ),
+                        relativeTo: root,
+                        duration: 0.3,
+                        timingFunction: .easeInOut
+                    )
                 }
             } else {
                 // Fallback on earlier versions
